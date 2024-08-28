@@ -1,0 +1,32 @@
+documents:
+  - name: "Service User Guide"
+    filepath: build/doc-marketplace/UserGuide.zip
+    default: true
+  - name: "Application Developers Guide"
+    filepath: build/doc-marketplace/developers-guide.zip
+  - name: Inner Source README
+    filepath: build/doc-marketplace/ReadMe.zip
+  - name: Contributing Guideline
+    filepath: build/doc-marketplace/Contributing.zip
+  - name: "Test Specification"
+    filepath: build/doc-marketplace/test-specification.zip
+  - name: "Test Report"
+    filepath: build/doc-marketplace/test-report.zip
+  - name: "Product Revision Information (PRI)"
+    filepath: build/doc-marketplace/pri.zip
+  - name: "Risk Assessment & Privacy Impact Assessment"
+    filepath: build/doc-marketplace/RA_PIA.zip
+  - name: "Vulnerability Analysis Report"
+    filepath: build/doc-marketplace/VA-report.zip
+  - name: "Service Vendor List (SVL)"
+    filepath: build/doc-svl-replacement/svl.zip
+  - name: "API Documentation"
+    filepath: build/doc-marketplace/API_documentation.zip
+  - name: "Ericsson ProtoBufs Schema Link"
+    external-link: https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-released-generic-local/eric-oss-5gpmevent-filetrans-proc/documents/version/5G_PM_EVENT_ERICSSON_PLACEHOLDER
+    restricted: true
+  - name: "Standardized ProtoBufs Schema Link"
+    external-link: https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-released-generic-local/eric-oss-5gpmevent-filetrans-proc/documents/version/5G_PM_EVENT_STANDARDIZED_PLACEHOLDER
+    restricted: true
+  # - name: "Characteristics Report"
+  #   filepath: build/doc-marketplace/characteristics-report.zip

@@ -1,0 +1,46 @@
+documents:
+    - name: API_documentation
+      files:
+        - ../doc/API_Documentation/api_documentation.md
+    - name: UserGuide
+      files:
+        - ../doc/User_Guide/user_guide.md
+        - ../doc/User_Guide/5GPmEventFileTransferAndProcessing_architecture_diagram.png
+        - ../doc/User_Guide/5GPmEventFileTransferAndProcessing_deployment_overview.png
+        - ../doc/User_Guide/Startup_External_Dependency_Checks.png
+    - name: pri
+      files:
+        - ../doc/PRI_DOC/5G-pm-event-file-transfer-and-processing-PRI-template.md
+    - name: ReadMe
+      files:
+        -  ../README.md
+    - name: Contributing
+      files:
+        -  ../CONTRIBUTING.md
+    - name: test-report
+      files:
+        - ../doc/Test_Report/test_report.md
+    - name: test-specification
+      files:
+        - ../doc/Test_Spec/test-specification.md
+    - name: developers-guide
+      files:
+        - ../doc/Application_Developers_Guide/Application_Developers_Guide.md
+        - ../doc/Application_Developers_Guide/5GPmEventFileTransferAndProcessing_architecture_overview.png
+    - name: RA_PIA
+      files:
+        - ../doc/RA_PIA/5g-pm-event-file-transfer-and-processing-ra-pia.docm
+    - name: VA-report
+      files:
+        - ../build/va-reports/Vulnerability_Report_2.0.md
+    - name: "Service Vendor List (SVL)"
+      files:
+        - ../build/doc-svl-replacement/svl.md
+#        - ../build/doc-svl-replacement/FossUsage_1.png
+#        - ../build/doc-svl-replacement/FossUsage_2.png
+#        - ../build/doc-svl-replacement/Main_1.png
+#        - ../build/doc-svl-replacement/Results_1.png
+
+    # - name: characteristics-report
+    #   files: 
+    #     - ../doc/Characteristic_Test_Report/characteristic_test_report.md

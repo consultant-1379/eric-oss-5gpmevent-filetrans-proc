@@ -1,0 +1,18 @@
+stage-marker-init:
+  - name: custom_stages/mimer_init.Jenkinsfile
+  - name: custom_stages/prepare_protobuf_artifacts.Jenkinsfile
+stage-marker-pre-parallel:
+  - name: custom_stages/build.Jenkinsfile
+  - name: custom_stages/push_protobuf_artifacts.Jenkinsfile
+  - name: custom_stages/generate_docs.Jenkinsfile
+stage-marker-test:
+  - name: custom_stages/sonarqube.Jenkinsfile
+  - name: custom_stages/image.Jenkinsfile
+  - name: custom_stages/package.Jenkinsfile
+stage-marker-helm:
+  - name: custom_stages/helm_install.Jenkinsfile
+stage-marker-va-report:
+  - name: custom_stages/foss_validation_for_mimer.Jenkinsfile
+  - name: custom_stages/marketplace_upload.Jenkinsfile
+stage-marker-post-success:
+  - name: custom_stages/mimer_steps.Jenkinsfile

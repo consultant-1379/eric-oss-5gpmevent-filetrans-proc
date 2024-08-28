@@ -1,0 +1,233 @@
+#
+# COPYRIGHT Ericsson 2021
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+modelVersion: 2.0
+
+description: "Ericsson Java Spring Boot This microservice will fetch and process 5g PM events files"
+
+# See image catalog: https://confluence.lmera.ericsson.se/display/ACD/ADP+CICD+Docker+Image+Catalog
+docker-images:
+  - adp-release-auto: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-adp-release-auto:${env.RELEASE_AUTO_TAG}
+
+import:
+  common: common-properties.yaml
+
+# List of constants
+properties:
+  # Functional ID for your Team or CI group to push to Gerrit repo
+  - git-user: ossadmin
+  - git-clone-url: https://gerrit-gamma.gic.ericsson.se/${common.git-repo-path}.git
+  # Released docker ARM repo project name
+  - project-subpath: proj-eric-oss
+  - image-registry-path: armdocker.rnd.ericsson.se/${project-subpath}
+  - image-drop-repopath: ${image-registry-path}-drop/${common.docker-image-name}:${env.RELEASE_CANDIDATE}
+  - image-released-proj: proj-eric-oss-released
+  - image-folder-released: 'build/released-images'
+  - image-released-repopath: ${image-registry-path}-released/${common.docker-image-name}:${env.RELEASE_CANDIDATE}
+  - image-manifest-url: https://armdocker.rnd.ericsson.se/artifactory/docker-v2-global-local/${image-released-proj}/${common.docker-image-name}/${env.RELEASE_CANDIDATE}/manifest.json
+  # Released helm ARM repo project name
+  - helm-chart-repo-server-path: ${common.arm-repository-url}/proj-eric-oss
+  - helm-chart-drop-repo: ${helm-chart-repo-server-path}-drop-helm
+  - helm-chart-folder-released: 'build/released-charts'
+  - helm-chart-released-repo: ${helm-chart-repo-server-path}-released-helm
+  - helm-chart-virtual-released-repo: ${helm-chart-repo-server-path}-released-helm
+  - helm-chart-artifact-url: ${helm-chart-released-repo}/${common.helm-chart-name}/${var.helmchart-file-name}
+  # Git repository name in GitCA
+  - gitca-repo-name: ${common.gitca-repo-name}
+
+# Import environment variables (For example: Jenkins parameters)
+env:
+  - HOME
+  - PWD
+  - DEBUG (default=false)
+
+  # Credentials
+  - HELM_USER (default=${git-user})
+  - SELI_ARTIFACTORY_REPO_USER
+  - SELI_ARTIFACTORY_REPO_PASS
+  - SERO_ARTIFACTORY_REPO_USER
+  - SERO_ARTIFACTORY_REPO_PASS
+  - GERRIT_USERNAME (default=${git-user})
+  - GERRIT_PASSWORD
+  - GITCA_USERNAME
+  - GITCA_PASSWORD
+  - MUNIN_TOKEN
+
+  # Default docker image tags
+  - RELEASE_AUTO_TAG (default=latest)
+
+  # mimer
+  - RELEASE_CANDIDATE (default=${var.version})
+  - MUNIN_DRY_RUN (default=false)
+
+# Variables, set by below tasks
+var:
+  - commithash
+  - version
+  - semver
+  - release-plus-version
+  - released-version
+  - released-version-without-build-number
+  - helmchart-file-name
+  - sha256-helm
+  - sha256-image
+
+# Rules to execute
+rules:
+
+  # Generates the released version based on environment variable MUNIN_RELEASE_CANDIDATE
+  # Generates adp artifacts properties
+  mimer-init:
+    - task: generate-released-versions
+      cmd:
+        - echo ${env.RELEASE_CANDIDATE} | sed s/-/+/ > .bob/var.release-plus-version
+        - echo ${env.RELEASE_CANDIDATE} | cut -d '-' -f 1 > .bob/var.released-version-without-build-number
+        - echo ${env.RELEASE_CANDIDATE} > .bob/var.released-version
+        - cat .bob/var.released-version-without-build-number > .bob/var.semver
+    - task: helmchart-file-name
+      cmd: echo ${common.helm-chart-name}-${var.release-plus-version}.tgz > .bob/var.helmchart-file-name
+    - task: set-dummy-artifact-checksums
+      cmd:
+      - echo '0000000000000000000000000000000000000000000000000000000000000000' > .bob/var.sha256-helm
+      - echo '0000000000000000000000000000000000000000000000000000000000000000' > .bob/var.sha256-image
+
+  # This rule pulls the release candidate image, saves it in a tar.gz format and pushes it to released-artifacts-repo
+  image-package-release:
+    - task: pull-docker-image
+      cmd:
+        - docker pull ${image-drop-repopath}
+    - task: save-images
+      cmd:
+        - mkdir -p ${image-folder-released}
+        - docker save ${image-drop-repopath}
+             -o ${image-folder-released}/${common.docker-image-name}-${env.RELEASE_CANDIDATE}.tar.gz
+
+  publish-released-docker-image:
+    - task: image-tag-released
+      cmd:
+       - docker tag ${image-drop-repopath} ${image-released-repopath}
+    - task: release-docker-image
+      cmd:
+       - docker push ${image-released-repopath}
+
+  # This rule fetches release candidate (e.g. 1.0.0-3) helm chart from helm-chart-repo
+  # and packages with Mimer release version (e.g. 1.0.0+3)
+  helm-package-release:
+    - task: generate-release-chart
+      docker-image: adp-release-auto
+      cmd:
+        - mkdir -p ${helm-chart-folder-released}
+        - helm pull --repo ${helm-chart-drop-repo} eric-oss-5gpmevt-filetx-proc
+          --version ${env.RELEASE_CANDIDATE}  --untar --untardir ${helm-chart-folder-released}
+          --username ${env.HELM_USER} --password ${env.SELI_ARTIFACTORY_REPO_PASS}
+        - helm-package
+          --folder ${helm-chart-folder-released}/${common.helm-chart-name}
+          --workdir .bob --output ${helm-chart-folder-released}
+          --version ${var.release-plus-version}
+
+  # The rule uploads the helm chart with PRA release version (e.g. 1.0.0+3) generated
+  # to the official helm repository helm-chart-released-repo
+  helm-publish-release:
+    - task: release-helm-package
+      docker-image: adp-release-auto
+      cmd: upload_helm_package
+        --chart-filename "${helm-chart-folder-released}/${var.helmchart-file-name}"
+        --chart-repo ${helm-chart-released-repo}
+        --helm-user ${env.HELM_USER}
+        --helm-token ${env.SELI_ARTIFACTORY_REPO_PASS}
+        --virtual-repo ${helm-chart-virtual-released-repo}
+        --skip-existing-version
+        # do not have features below, will add them later.
+        # --properties product_metadata=${structure-data-file-location}
+
+  # Create product versions from product structure and FOSS dependencies
+  munin-update-version:
+    - task: create-products
+      docker-image: adp-release-auto
+      cmd: munin create-versions -t $(<"${env.MUNIN_TOKEN}") -c plms/product-structure.yaml -v ${env.RELEASE_CANDIDATE} --debug ${env.DEBUG}
+
+  # Fetch artifact checksums from artifactory and get commit hash
+  fetch-artifact-checksums:
+      # Get artifact hashs
+    - task: init
+      docker-image: adp-release-auto
+      docker-flags:
+        - "--env SELI_ARTIFACTORY_REPO_PASS"
+      cmd:
+        - arm get-checksum --url ${helm-chart-artifact-url} --sha256 --apikey ${env.SELI_ARTIFACTORY_REPO_PASS} --output .bob/var.sha256-helm
+        - arm get-checksum --url ${image-manifest-url} --sha256 --apikey ${env.SELI_ARTIFACTORY_REPO_PASS} --output .bob/var.sha256-image
+    - task: get-commit-hash
+      docker-image: adp-release-auto
+      cmd:
+        - git rev-list -n 1 ${env.RELEASE_CANDIDATE} > .bob/var.commithash
+        - cat .bob/var.commithash
+
+  # Set artifact URLs in PLMS
+  munin-set-artifact:
+      # Set artifact URLs
+    - task: set-artifact
+      docker-image: adp-release-auto
+      docker-flags:
+        - "--env MUNIN_TOKEN"
+      cmd:
+       - munin set-artifact -t $(<"${env.MUNIN_TOKEN}") -u ${helm-chart-artifact-url} --sha256 ${var.sha256-helm} -p ${common.helm-product-number} -v ${var.semver} --dry-run ${env.MUNIN_DRY_RUN}
+       - munin set-artifact -t $(<"${env.MUNIN_TOKEN}") -u ${image-manifest-url} --sha256 ${var.sha256-image} -p ${common.image-product-number} -v ${var.semver} --dry-run ${env.MUNIN_DRY_RUN}
+
+  # Set artifact URLs in PLMS via GitCA
+  munin-connect-ca-artifact:
+    - task: archive-commit
+      docker-image: adp-release-auto
+      docker-flags:
+        - --env GITCA_USERNAME
+        - --env GITCA_PASSWORD
+      cmd: gitca register-plm
+           --commithash ${var.commithash}
+           --product-number ${common.source-product-number}
+           --version ${var.semver}
+           --dry-run ${env.MUNIN_DRY_RUN}
+           --name ${gitca-repo-name}
+           --debug
+
+  # Release products in PLMS
+  munin-release-version:
+    - task: release-versions
+      docker-image: adp-release-auto
+      docker-flags:
+        - "--env MUNIN_TOKEN"
+      cmd:
+        - munin release-versions
+          -t $(<"${env.MUNIN_TOKEN}")
+          -c plms/product-structure.yaml
+          -v ${var.semver}
+          --dry-run ${env.MUNIN_DRY_RUN}
+          --wait-prim-target 1800
+          --debug
+          # do not have features below, will add them later.
+          # --set CAF_10163_VERSION=${common.caf-10163-product-version}
+          # --set CBOS_VERSION=${var.cbos-semver}
+
+  # Create and push git tag. Example v1.0.0+55
+  create-plus-git-tag:
+    - task: git-tag
+      docker-image: adp-release-auto
+      docker-flags:
+        - --env GERRIT_USERNAME
+        - --env GERRIT_PASSWORD
+      cmd: version-handler create-git-tag
+           --git-repo-url ${git-clone-url}
+           --tag ${var.release-plus-version}
+           --message "Release ${var.release-plus-version}"
+           --dry-run false

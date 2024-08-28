@@ -1,0 +1,25 @@
+documents:
+  # document name
+  - name: user_guide
+    # file names of files to be packaged in the document
+    files:
+      - ../doc/User_Guide/user_guide.md
+      - ../doc/User_Guide/5GPmEventFileTransferAndProcessing_architecture_diagram.png
+      - ../doc/User_Guide/5GPmEventFileTransferAndProcessing_deployment_overview.png
+      - ../doc/User_Guide/Startup_External_Dependency_Checks.png
+  - name: test-specification
+    files:
+      - ../doc/Test_Spec/test-specification.md
+  - name: developers_guide
+    files:
+      - ../doc/Application_Developers_Guide/Application_Developers_Guide.md
+      - ../doc/Application_Developers_Guide/5GPmEventFileTransferAndProcessing_architecture_overview.png
+  - name: API_documentation
+    files:
+      - ../doc/API_Documentation/api_documentation.md
+  - name: PRI
+    files:
+      - ../doc/PRI_DOC/5G-pm-event-file-transfer-and-processing-PRI-template.md
+  - name: RA_PIA
+    files:
+      - ../doc/RA_PIA/5g-pm-event-file-transfer-and-processing-ra-pia.docm

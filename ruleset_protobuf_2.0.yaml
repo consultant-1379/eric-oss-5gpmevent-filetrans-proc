@@ -1,0 +1,177 @@
+#
+# COPYRIGHT Ericsson 2023
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+modelVersion: 2.0
+
+description: "Rules to extract standardized/Ericsson Protobuf schemas and their corresponding PM Event eventIDs from the radionode-node-model repo for Marketplace uploading and use in this microservice"
+
+# List of constants
+properties:
+
+  - dev-generic-local-repopath: https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-dev-generic-local/eric-oss-5gpmevent-filetrans-proc/documents
+  - released-generic-local-repopath: https://arm.seli.gic.ericsson.se/artifactory/proj-eric-oss-released-generic-local/eric-oss-5gpmevent-filetrans-proc/documents
+  - protoc-release-repo: https://github.com/protocolbuffers/protobuf/releases
+
+  #PROTOBUF
+  - radionode-dir: doc/radionode-node-model
+  - python-scripts-dir: pm_events_splitter
+  - protobuf-schema-build-dir: build/doc-marketplace-protobuf
+  - dev-marketplace-upload-config: doc/dev_marketplace_upload_config.yaml
+  - release-marketplace-upload-config: doc/release_marketplace_upload_config.yaml
+  - python-script-filename: pm_events_splitter.py
+
+  #Curl retries
+  - retry: 5
+  - retry-delay: 5
+  - connection-attempt-max-seconds: 3
+
+# import environment variables (For example: Jenkins parameters)
+env:
+
+  - PWD
+
+  # Credentials
+  - SELI_ARTIFACTORY_REPO_USER
+  - SELI_ARTIFACTORY_REPO_PASS
+
+# Variables, set by below tasks
+var:
+  - radio-node-version: RADIONODE_VERSION
+  - version-prefix: VERSION_PREFIX
+
+# Rules to execute
+rules:
+
+  #Remove radionode-node-model dir if existing
+  purge-radionode-dir:
+    - task: remove-radionode-dir
+      cmd:
+        - "rm -rf ${env.PWD}/${radionode-dir}"
+
+  # Trigger python script to create versioned standardized and Ericsson protobuf zips and update event-mapping.yaml
+  generate-proto-zips:
+    - task: trigger-python-script
+      cmd:
+        - "python3 ${env.PWD}/${python-scripts-dir}/${python-script-filename} -i=${env.PWD}/${radionode-dir}"  #bob has python3 installed
+
+  test-proto-files:
+    - task: fetch-protoc # selects the latest released protoc
+      cmd:
+        latest_version=$(curl -Ls -o /dev/null -w %{url_effective} ${protoc-release-repo}/latest | awk -F"/tag/v" '{print $2}')
+        && binary_version=$latest_version
+        && if [[ $binary_version == *"rc"* ]]; then binary_version=$(echo "$binary_version" | sed -E "s/rc([0-9]+)/rc-\1/") ; fi
+        && echo "The latest version is:" "$latest_version" "binary_version =" "$binary_version"
+        && echo "Attempting to download latest released protoc version:" ${protoc-release-repo}/download/v$latest_version/protoc-$binary_version-linux-x86_64.zip
+        && mkdir -p ${env.PWD}/${python-scripts-dir}/protoc/
+        && curl -L -o ${env.PWD}/${python-scripts-dir}/protoc/protoc-"$binary_version"-linux-x86_64.zip  ${protoc-release-repo}/download/v"$latest_version"/protoc-"$binary_version"-linux-x86_64.zip
+        && unzip -o ${env.PWD}/${python-scripts-dir}/protoc//protoc-"$binary_version"-linux-x86_64
+    - task: unzip-nonstandard-protos
+      cmd:
+        - 'unzip ${env.PWD}/${python-scripts-dir}/5G_PM_EVENT_ERICSSON_${var.radio-node-version}.zip -d ${env.PWD}/${python-scripts-dir}/'
+    - task: compile-nonstandard-protos
+      cmd:
+        - 'bin/protoc --proto_path=${env.PWD}/${python-scripts-dir}/ --java_out=${env.PWD}/${python-scripts-dir}/ ${env.PWD}/${python-scripts-dir}/pm_event/*.proto'
+    - task: cleanup-nonstandard-protos
+      cmd:
+        - 'rm -rf ${env.PWD}/${python-scripts-dir}/pm_event'
+        - 'rm -rf ${env.PWD}/${python-scripts-dir}/com'
+    - task: unzip-standardized-protos
+      cmd:
+        - 'unzip ${env.PWD}/${python-scripts-dir}/5G_PM_EVENT_STANDARDIZED_${var.radio-node-version}.zip -d ${env.PWD}/${python-scripts-dir}/'
+    - task: compile-standardized-protos
+      cmd:
+        - 'bin/protoc --proto_path=${env.PWD}/${python-scripts-dir}/ --java_out=${env.PWD}/${python-scripts-dir}/ ${env.PWD}/${python-scripts-dir}/pm_event/*.proto'
+    - task: cleanup-standardized-protos
+      cmd:
+        - 'rm -rf ${env.PWD}/${python-scripts-dir}/pm_event'
+        - 'rm -rf ${env.PWD}/${python-scripts-dir}/com'
+        - 'rm -rf ${env.PWD}/bin'
+        - 'rm -rf ${env.PWD}/include'
+        - 'rm -rf ${env.PWD}/${python-scripts-dir}/protoc'
+
+  # Create build directories, move versioned standardized and Ericsson non-standard protobuf zips to build directory for Marketplace upload and remove zips from doc/radionode-node-model directory
+  prepare-protobufs-for-marketplace:
+    - task: generate-build-dirs-for-standardized-ericsson-protobufs
+      cmd:
+        - "mkdir -p ${protobuf-schema-build-dir}"
+    - task: move-protobuf-zips-to-build-dir
+      cmd:
+        - "cp ${env.PWD}/${python-scripts-dir}/5G_PM_EVENT_ERICSSON_${var.radio-node-version}.zip ${env.PWD}/build/doc-marketplace-protobuf"
+        - "cp ${env.PWD}/${python-scripts-dir}/5G_PM_EVENT_STANDARDIZED_${var.radio-node-version}.zip ${env.PWD}/build/doc-marketplace-protobuf"
+    - task: remove-generated-protobuf-zips
+      cmd:
+        - "rm -rf ${env.PWD}/${python-scripts-dir}/5G_PM_EVENT_ERICSSON_${var.radio-node-version}.zip"
+        - "rm -rf ${env.PWD}/${python-scripts-dir}/5G_PM_EVENT_STANDARDIZED_${var.radio-node-version}.zip"
+
+  #PUT to development document artifactory for marketplace linking
+  put-to-dev-generic-local:
+    - task: put-ericsson-zip
+      cmd:
+        upload_response=$(curl -i -u '${env.SELI_ARTIFACTORY_REPO_USER}:${env.SELI_ARTIFACTORY_REPO_PASS}'
+          --retry ${retry} --retry-delay ${retry-delay} --max-time ${connection-attempt-max-seconds}
+            -X PUT -T '${protobuf-schema-build-dir}/5G_PM_EVENT_ERICSSON_${var.radio-node-version}.zip'
+              '${dev-generic-local-repopath}/5G_PM_EVENT_ERICSSON_${var.radio-node-version}.zip' | awk '/HTTP/ {print $2}')
+                && http_code=$(echo "$upload_response" | tail -n 1)
+                  && [ "$http_code" -eq 201 ] && echo "PUT for Ericsson zip successful with HTTP code:" $http_code ||
+                    (echo "PUT for non standard zip failed with HTTP code:" $http_code && exit 1)
+    - task: put-standardized-zip
+      cmd:
+        upload_response=$(curl -i -u '${env.SELI_ARTIFACTORY_REPO_USER}:${env.SELI_ARTIFACTORY_REPO_PASS}'
+          --retry ${retry} --retry-delay ${retry-delay} --max-time ${connection-attempt-max-seconds}
+            -X PUT -T '${protobuf-schema-build-dir}/5G_PM_EVENT_STANDARDIZED_${var.radio-node-version}.zip'
+              '${dev-generic-local-repopath}/5G_PM_EVENT_STANDARDIZED_${var.radio-node-version}.zip' | awk '/HTTP/ {print $2}')
+                && http_code=$(echo "$upload_response" | tail -n 1)
+                  && [ "$http_code" -eq 201 ] && echo "PUT for standardized zip successful with HTTP code:" $http_code ||
+                    (echo "PUT for standardized zip failed with HTTP code:" $http_code && exit 1)
+
+  #PUT to release document artifactory for marketplace linking
+  put-to-released-generic-local:
+    - task: put-ericsson-zip
+      cmd:
+        upload_response=$(curl -i -u '${env.SELI_ARTIFACTORY_REPO_USER}:${env.SELI_ARTIFACTORY_REPO_PASS}'
+          --retry ${retry} --retry-delay ${retry-delay} --max-time ${connection-attempt-max-seconds}
+            -X PUT -T '${protobuf-schema-build-dir}/5G_PM_EVENT_ERICSSON_${var.radio-node-version}.zip'
+              '${released-generic-local-repopath}/${var.version-prefix}/5G_PM_EVENT_ERICSSON_${var.radio-node-version}.zip' | awk '/HTTP/ {print $2}')
+                && http_code=$(echo "$upload_response" | tail -n 1)
+                  && [ "$http_code" -eq 201 ] && echo "PUT for ericsson zip successful with HTTP code:" $http_code ||
+                    (echo "PUT for non standard zip failed with HTTP code:" $http_code && exit 1)
+    - task: put-standardized-zip
+      cmd:
+        upload_response=$(curl -i -u '${env.SELI_ARTIFACTORY_REPO_USER}:${env.SELI_ARTIFACTORY_REPO_PASS}'
+          --retry ${retry} --retry-delay ${retry-delay} --max-time ${connection-attempt-max-seconds}
+            -X PUT -T '${protobuf-schema-build-dir}/5G_PM_EVENT_STANDARDIZED_${var.radio-node-version}.zip'
+              '${released-generic-local-repopath}/${var.version-prefix}/5G_PM_EVENT_STANDARDIZED_${var.radio-node-version}.zip' | awk '/HTTP/ {print $2}')
+                && http_code=$(echo "$upload_response" | tail -n 1)
+                  && [ "$http_code" -eq 201 ] && echo "PUT for standardized zip successful with HTTP code:" $http_code ||
+                    (echo "PUT for standardized zip failed with HTTP code:" $http_code && exit 1)
+
+  #Update dev_marketplace_upload_config.yaml with new radionode JAR versions
+  update-dev-marketplace_upload_config:
+    - task: replace-non-standard-version
+      cmd: >
+        sed -i 's|${dev-generic-local-repopath}/5G_PM_EVENT_ERICSSON_.*|${dev-generic-local-repopath}/5G_PM_EVENT_ERICSSON_${var.radio-node-version}.zip|' ${dev-marketplace-upload-config}
+    - task: replace-standardized-version
+      cmd: >
+        sed -i 's|${dev-generic-local-repopath}/5G_PM_EVENT_STANDARDIZED_.*|${dev-generic-local-repopath}/5G_PM_EVENT_STANDARDIZED_${var.radio-node-version}.zip|' ${dev-marketplace-upload-config}
+
+  #Update release_marketplace_upload_config.yaml with new radionode JAR versions
+  update-release-marketplace_upload_config:
+    - task: replace-non-standard-version
+      cmd: >
+        sed -i 's|${released-generic-local-repopath}/[0-9a-zA-Z]\+/5G_PM_EVENT_ERICSSON.*|${released-generic-local-repopath}/${var.version-prefix}/5G_PM_EVENT_ERICSSON_${var.radio-node-version}.zip|' ${release-marketplace-upload-config}
+    - task: replace-standardized-version
+      cmd: >
+        sed -i 's|${released-generic-local-repopath}/[0-9a-zA-Z]\+/5G_PM_EVENT_STANDARDIZED.*|${released-generic-local-repopath}/${var.version-prefix}/5G_PM_EVENT_STANDARDIZED_${var.radio-node-version}.zip|' ${release-marketplace-upload-config}

@@ -1,0 +1,65 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: 5g-pm-event-file-transfer-and-processing
+  title: 5G PM Event File Transfer and Processing
+  description: The 5G PM Event File Transfer and Processing service collects 5G event files from ENM based on notifications consumed from Kafka, produced by the File Notification Service (FNS). The service parses the 5G event files it receives and breaks up the contents of each event into records. The records are written onto a Kafka output topic to be consumed by other services.
+  annotations:
+    backstage.io/source-location: url:https://gerrit-gamma.gic.ericsson.se/plugins/gitiles/OSS/com.ericsson.oss.adc/eric-oss-5gpmevent-filetrans-proc
+    backstage.io/kubernetes-label-selector: 'app.kubernetes.io/name=eric-oss-5gpmevt-filetx-proc'
+    gerrit/component: OSS/com.ericsson.oss.adc/eric-oss-5gpmevent-filetrans-proc
+    sonarqube.org/project-key: com.ericsson.oss.adc:eric-oss-5gpmevent-filetrans-proc
+    jira.com/project-keys: IDUN
+    jira.com/filter-ids: "223931"
+    jenkins:
+      fem6s11-eiffel216.eiffel.gic.ericsson.se:8443/eric-oss-5gpmevent-filetrans-proc_PreCodeReview_Hybrid,
+      fem6s11-eiffel216.eiffel.gic.ericsson.se:8443/eric-oss-5gpmevent-filetrans-proc_Publish_Hybrid
+    spinnaker.io/application-name: adc-e2e-cicd
+    spinnaker.io/pipelines: eric-oss-5gpmevent-filetrans-proc-E2E-Flow
+  links:
+    - url: https://mimer.internal.ericsson.com/productPage?activeView=productDetails&productNumber=APR201536
+      title: Mimer
+      icon: dashboard
+    - url: https://eteamspace.internal.ericsson.com/display/IDUN/Team+Quaranteam
+      title: Team Quaranteam Confluence
+      icon: dashboard
+    - url: https://adp.ericsson.se/marketplace/5g-pm-event-file-transfer-and-processing/documentation
+      title: ADP
+      icon: dashboard
+  tags:
+    - ericsson-intelligent-controller
+  roles:
+    scrum-master: EEITKY
+    product-owner: ebhtnkt
+    ci-spoc: efintho
+    test-expert: ebrimah
+    microservice-architect: enahsik
+    security-master: emeacod
+    line-manager: EEIKONL
+  approval:
+    date: 22-02-2024
+    approver: enahsik
+spec:
+  type: microservice
+  lifecycle: production
+  owner: idun-quaranteam-mandl
+  system: eric-oss-adc
+  consumesApis:
+  - subsystems-api
+  - data-catalog-api

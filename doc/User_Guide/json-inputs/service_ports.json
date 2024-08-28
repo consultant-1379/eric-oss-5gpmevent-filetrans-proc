@@ -1,0 +1,90 @@
+{
+  "metadata" : {
+    "serviceHelmChartName" : "same as the prefix to this file name",
+    "usedSchemaVersion" : "1.0 or later",
+    "fileVersion" : "The version of this servicePorts json file",
+    "dateEdited" : "format yyyy-mm-dd"
+  },
+  "internalPorts": [
+    {
+      "serviceInterfaceName": "internal NETCONF",
+      "protocol": "NETCONF/TLS",
+      "ipAddressType": "",
+      "port": 2023,
+      "transportProtocol": "TCP",
+      "ipVersion": ["IPv4", "IPv6"]
+    },
+    {
+      "serviceInterfaceName": "internal CLI",
+      "protocol": "SSH",
+      "ipAddressType": "",
+      "port": 4565,
+      "transportProtocol": "TCP",
+      "ipVersion": ["IPv4", "IPv6"]
+    },
+    {
+      "serviceInterfaceName": "REST API",
+      "protocol": "HTTP",
+      "ipAddressType": "",
+      "port": 5005,
+      "transportProtocol": "TCP",
+      "ipVersion": ["IPv4", "IPv6"]
+    },
+    {
+      "serviceInterfaceName": "REST API (TLS enabled)",
+      "protocol": "HTTPS",
+      "ipAddressType": "",
+      "port": 5006,
+      "transportProtocol": "TCP",
+      "ipVersion": ["IPv4", "IPv6"]
+    },
+    {
+      "serviceInterfaceName": "Liveness",
+      "protocol": "HTTPS",
+      "ipAddressType": "",
+      "port": 7000,
+      "transportProtocol": "TCP",
+      "ipVersion": "IPv4"
+    },
+    {
+      "serviceInterfaceName": "Readiness",
+      "protocol": "HTTPS",
+      "ipAddressType": "",
+      "port": 7001,
+      "transportProtocol": "TCP",
+      "ipVersion": "IPv4"
+    }
+  ],
+  "externalPorts": [
+    {
+      "serviceInterfaceName": "Configuration Management NETCONF Server",
+      "protocol": "NETCONF/SSH",
+      "ipAddressType": "OAM IP",
+      "port": {
+        "helmParameter": "service.netconfPort"
+      },
+      "transportProtocol": "TCP",
+      "ipVersion": ["IPv4", "IPv6"]
+    },
+    {
+      "serviceInterfaceName": "Configuration Management NETCONF Server",
+      "protocol": "NETCONF/TLS",
+      "ipAddressType": "OAM IP",
+      "port": {
+        "helmParameter": "service.netconfTlsPort"
+      },
+      "transportProtocol": "TCP",
+      "ipVersion": ["IPv4", "IPv6"]
+    },
+    {
+      "serviceInterfaceName": "Configuration Management CLI Client",
+      "protocol": "CLI/SSH",
+      "ipAddressType": "OAM IP",
+      "port": {
+        "helmParameter": "service.cliPort"
+      },
+      "transportProtocol": "TCP",
+      "ipVersion": ["IPv4", "IPv6"]
+    }
+  ]
+}

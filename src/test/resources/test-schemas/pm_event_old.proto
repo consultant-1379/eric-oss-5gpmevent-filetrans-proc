@@ -1,0 +1,119 @@
+syntax="proto3";
+package pm_event;
+option java_package = "com.ericsson.pm_event";
+option java_outer_classname = "PmEventOuterClass";
+
+message PmEventHeader {
+  int64 time_stamp = 1;
+  bytes system_uuid = 2;
+  string compute_name = 3;
+  string network_managed_element = 4;
+  repeated int64 pm_event_job_ids = 5;
+  bytes ue_trace_id = 6;
+  bytes trace_reference = 7;
+  bytes trace_recording_session_reference = 8;
+}
+
+enum PmEventMessageGroup {
+  PM_EVENT_MESSAGE_GROUP_NO_VALUE = 0;
+  PM_EVENT_MESSAGE_GROUP_COMMON = 1;
+  PM_EVENT_MESSAGE_GROUP_DU = 2;
+  PM_EVENT_MESSAGE_GROUP_CUCP = 3;
+  PM_EVENT_MESSAGE_GROUP_CUUP = 4;
+}
+
+enum UeTraceJobActivationTask {
+  UE_TRACE_JOB_ACTIVATION_TASK_NO_VALUE = 0;
+  UE_TRACE_JOB_ACTIVATION_TASK_INITIAL = 1;
+  UE_TRACE_JOB_ACTIVATION_TASK_PROPAGATION = 2;
+}
+
+enum UeTraceJobDeactivationCause {
+  UE_TRACE_JOB_DEACTIVATION_CAUSE_NO_VALUE = 0;
+  UE_TRACE_JOB_DEACTIVATION_CAUSE_OSS = 1;
+  UE_TRACE_JOB_DEACTIVATION_CAUSE_TRAFFIC = 2;
+}
+
+message FileOpen {
+  int64 etcm_version = 1;
+  int64 etcm_correction_version = 2;
+}
+
+message FileCloseEndOfRop {
+  bool dummy = 1; // This was added to avoid compiler warnings in generated code
+}
+
+message FileCloseMaxFileSizeReached {
+  bool dummy = 1; // This was added to avoid compiler warnings in generated code
+}
+
+message FileCloseStorageSizeReached {
+  bool dummy = 1; // This was added to avoid compiler warnings in generated code
+}
+
+message MaxFileSizeRecovery {
+  bool dummy = 1; // This was added to avoid compiler warnings in generated code
+}
+
+message DroppedEvents {
+  int64 number_of_dropped_events = 1;
+  string managed_function = 2;
+}
+
+message FileCloseLowPrioStorageSizeReached {
+  bool dummy = 1; // This was added to avoid compiler warnings in generated code
+}
+
+message Heartbeat {
+  string managed_function = 1;
+}
+
+message FileContentRemovedForHigherPriorityFiles {
+  bool dummy = 1; // This was added to avoid compiler warnings in generated code
+}
+
+message StartRecordingSession {
+  UeTraceJobActivationTask activation_task = 1;
+}
+
+message StopRecordingSession {
+  UeTraceJobDeactivationCause deactivation_cause = 1;
+}
+
+message RecordingSessionMaxUeTraceFilesReached {
+  UeTraceJobActivationTask activation_task = 1;
+}
+
+message RecordingSessionMaxStreamedUeTracesReached {
+  UeTraceJobActivationTask activation_task = 1;
+}
+
+message CommonPmEvent {
+  oneof event_payload {
+    FileOpen file_open = 1;
+    FileCloseEndOfRop file_close_end_of_rop = 2;
+    FileCloseMaxFileSizeReached file_close_max_file_size_reached = 3;
+    FileCloseStorageSizeReached file_close_storage_size_reached = 4; // Not used
+    MaxFileSizeRecovery max_file_size_recovery = 5;
+    DroppedEvents dropped_events = 6;
+    FileCloseLowPrioStorageSizeReached file_close_low_prio_storage_size_reached = 7; // Not used
+    Heartbeat heartbeat = 8;
+    FileContentRemovedForHigherPriorityFiles file_content_removed_for_higher_priority_files = 9;
+    StartRecordingSession start_recording_session = 10;
+    StopRecordingSession stop_recording_session = 11;
+    RecordingSessionMaxUeTraceFilesReached recording_session_max_ue_trace_files_reached = 12;
+    RecordingSessionMaxStreamedUeTracesReached recording_session_max_streamed_ue_traces_reached = 13;
+  }
+}
+
+message PmEvent {
+  int64 pm_event_group_version = 1;
+  int64 pm_event_common_version = 2;
+  PmEventMessageGroup group = 3;
+  int64 event_id = 4;
+  int64 pm_event_correction_version = 5;
+  int64 etcm_version = 6;
+  int64 etcm_correction_version = 7;
+  PmEventHeader header = 14;
+  bytes payload = 15;
+}

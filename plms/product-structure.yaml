@@ -1,0 +1,101 @@
+#
+# COPYRIGHT Ericsson 2022
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+modelVersion: "2.0"
+flavor: "Generic"
+service:
+  # name of the service:
+  name: "5G PM Event File Transfer and Processing"
+
+  # Design Country (set on the source products)
+  design_countries:
+    - IE                                                                        # MAY NEED TO CHANGE DEPENDING ON DESIGN COUTRY
+
+  # Compilation Country (Set on the derivative products)
+  sw_compilation_country: SE
+
+  # Release responsible
+  release_responsible: BDGSBECH
+
+  #  Design responsible
+  design_responsible: BDGSBECH
+
+  # Bookmarks
+  bookmark: PRIM
+
+  # Details of the APR product structure:
+  top_product:
+    alias: ["eric-oss-5gpmevt-filetx-proc"]
+
+    # APR Product Number
+    number: APR 201 536
+
+    # Description
+    description: "The 5G PM Event File Transfer and Processing Microservice retrieves 5G PM events files from ENM and splits them to records which are written to an output Kafka topic"
+
+    # Includes
+    includes:
+
+      # SUSE Licenses
+      - prim: 1/FAL 115 3215
+        rstate: R1A
+      - prim: 3/FAL 115 3215
+        rstate: R1A
+      - prim: 5/FAL 115 3215
+        rstate: R1A
+      - prim: 7/FAL 115 3215
+        rstate: R1A
+
+  # Details of the Source product structure
+  src_products:
+
+    # Source Code Product
+    - label: Source
+      number: CAV 101 0285
+
+  # Details of zero or more derivative product structures, use [] for zero
+  derivative_products:
+
+    # Label describing the product, must be uniq per list item
+    - label: "HELM"
+      number: "CXD 101 304"
+      alias: ["eric-oss-5gpmevt-filetx-proc"]
+      derivedFrom:
+        munin: CAV 101 0285
+
+    - label: "IMAGE"
+      number: "CXU 101 1380"
+      description: "The 5G PM Event File Transfer and Processing Microservice retrieves 5G PM events files from ENM and splits them to records which are written to an output Kafka topic"
+      includes:
+
+        # Common Base OS
+        - munin: CXC 201 2032
+          version: 5.14.0
+          secondPartyProduct: "True"
+
+        # Common Base OS
+        - munin: CXC 201 2031
+          version: 5.14.0
+          secondPartyProduct: "True"
+
+      # uses_foss:
+      #   - dependencies_file: dependencies.yaml                       #  Dependencies YAML
+      #   - foss_usage: foss.usage.yaml                                  #  FOSS Usage YAML
+      # uses_encryption:
+      #   - import: encryptions.yaml                                       #  Encryptions YAML
+
+      derivedFrom:
+        munin: CAV 101 0285 # double check this is right

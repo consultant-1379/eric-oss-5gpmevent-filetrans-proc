@@ -1,0 +1,501 @@
+#
+# COPYRIGHT Ericsson 2024
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+modelVersion: "3.0"
+dependencies:
+  - ID: ch.qos.logback:logback-classic+1.4.14
+    mimer:
+      selected_licenses:
+      - EPL-1.0
+      linking: Classpath
+  - ID: ch.qos.logback:logback-core+1.4.14
+    mimer:
+      selected_licenses:
+        - EPL-1.0
+      linking: Classpath
+  - ID: com.fasterxml.jackson.core:jackson-annotations+2.15.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: com.fasterxml.jackson.core:jackson-core+2.15.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: com.fasterxml.jackson.core:jackson-databind+2.15.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: com.fasterxml.jackson.datatype:jackson-datatype-jdk8+2.15.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: com.fasterxml.jackson.datatype:jackson-datatype-jsr310+2.15.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations+2.15.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: com.fasterxml.jackson.module:jackson-module-parameter-names+2.15.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: com.fasterxml:classmate+1.6.0
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: com.github.luben:zstd-jni+1.5.5-1
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: com.github.mwiede:jsch+0.2.16
+    mimer:
+      linking: Classpath
+  - ID: commons-io:commons-io+2.13.0
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: io.micrometer:micrometer-commons+1.12.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: io.micrometer:micrometer-core+1.11.0
+    bazaar:
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+  - ID: io.micrometer:micrometer-jakarta9+1.12.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: io.micrometer:micrometer-observation+1.12.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: io.micrometer:micrometer-registry-prometheus+1.11.0
+    bazaar:
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+  - ID: io.prometheus:simpleclient+0.16.0
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: io.prometheus:simpleclient_common+0.16.0
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: io.prometheus:simpleclient_tracer_common+0.16.0
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: io.prometheus:simpleclient_tracer_otel+0.16.0
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: io.prometheus:simpleclient_tracer_otel_agent+0.16.0
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: jakarta.activation:jakarta.activation-api+2.1.2
+    mimer:
+      selected_licenses:
+        - EDL-1.0
+      linking: Classpath
+  - ID: jakarta.annotation:jakarta.annotation-api+2.1.1
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: jakarta.inject:jakarta.inject-api+2.0.1
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: jakarta.validation:jakarta.validation-api+3.0.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: jakarta.ws.rs:jakarta.ws.rs-api+3.1.0
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: jakarta.xml.bind:jakarta.xml.bind-api+4.0.1
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: net.logstash.logback:logstash-logback-encoder+7.4
+    bazaar:
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+  - ID: org.apache.kafka:kafka-clients+3.6.1
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.apache.tomcat.embed:tomcat-embed-core+10.1.18
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.apache.tomcat.embed:tomcat-embed-el+10.1.18
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.apache.tomcat.embed:tomcat-embed-websocket+10.1.18
+    bazaar:
+      prim: 1/CTX1041773
+    mimer:
+      linking: Classpath
+      product_number: CTX1041773
+  - ID: org.bouncycastle:bcprov-jdk18on+1.74
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.glassfish.hk2.external:aopalliance-repackaged+3.0.5
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.hk2:class-model+3.0.5
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.glassfish.hk2:hk2+3.0.5
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.hk2:hk2-api+3.0.5
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.hk2:hk2-core+3.0.5
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.hk2:hk2-locator+3.0.5
+    bazaar:
+      prim: 1/CTX1040592
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+      product_number: CTX1040592
+  - ID: org.glassfish.hk2:hk2-runlevel+3.0.5
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.hk2:hk2-utils+3.0.5
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.glassfish.hk2:spring-bridge+3.0.5
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.jersey.containers:jersey-container-servlet+3.1.5
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.jersey.containers:jersey-container-servlet-core+3.1.5
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.jersey.core:jersey-client+3.1.5
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.jersey.core:jersey-common+3.1.5
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.jersey.core:jersey-server+3.1.5
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.jersey.ext:jersey-bean-validation+3.1.5
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.jersey.ext:jersey-entity-filtering+3.1.5
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.jersey.ext:jersey-spring6+3.1.5
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.glassfish.jersey.inject:jersey-hk2+3.1.5
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.glassfish.jersey.media:jersey-media-json-jackson+3.1.5
+    mimer:
+      selected_licenses:
+        - EPL-2.0
+      linking: Classpath
+  - ID: org.javassist:javassist+3.29.2-GA
+    mimer:
+      selected_licenses:
+        - Apache-2.0
+      linking: Classpath
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+  - ID: org.ow2.asm:asm-analysis+9.6
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.ow2.asm:asm-commons+9.6
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.ow2.asm:asm-tree+9.6
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.ow2.asm:asm-util+9.6
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot+3.2.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-actuator+3.2.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-actuator-autoconfigure+3.2.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-autoconfigure+3.2.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-starter+3.2.2
+    bazaar:
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-starter-actuator+3.2.2
+    bazaar:
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-starter-json+3.2.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-starter-logging+3.2.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-starter-validation+3.2.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-starter-web+3.2.2
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.cloud:spring-cloud-starter-bootstrap+4.1.0
+    bazaar:
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.retry:spring-retry+2.0.5
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.security:spring-security-crypto+6.2.1
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.security:spring-security-rsa+1.1.1
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework:spring-aop+6.1.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework:spring-beans+6.1.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework:spring-context+6.1.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework:spring-core+6.1.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework:spring-expression+6.1.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework:spring-jcl+6.1.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework:spring-messaging+6.1.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework:spring-tx+6.1.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework:spring-web+6.1.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.springframework:spring-webmvc+6.1.3
+    bazaar:
+      stako_decision_reason: allowed transitive dependency
+    mimer:
+      linking: Classpath
+  - ID: org.yaml:snakeyaml+2.0
+    bazaar:
+      stako_decision_reason: allowed
+    mimer:
+      linking: Classpath
+  - ID: org.apache.logging.log4j:log4j-api+2.21.1
+    mimer:
+      linking: Classpath
+  - ID: org.apache.logging.log4j:log4j-to-slf4j+2.21.1
+    mimer:
+      linking: Classpath
+  - ID: org.hibernate.validator:hibernate-validator+8.0.1.Final
+    mimer:
+      linking: Classpath
+  - ID: org.jboss.logging:jboss-logging+3.5.3.Final
+    mimer:
+      linking: Classpath
+  - ID: org.projectlombok:lombok+1.18.28
+    mimer:
+      linking: Classpath
+  - ID: org.slf4j:jul-to-slf4j+2.0.11
+    mimer:
+      linking: Classpath
+  - ID: org.slf4j:slf4j-api+2.0.11
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-starter-jersey+3.2.2
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.boot:spring-boot-starter-tomcat+3.2.2
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.cloud:spring-cloud-commons+4.1.0
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.cloud:spring-cloud-context+4.1.0
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.cloud:spring-cloud-starter+4.1.0
+    mimer:
+      linking: Classpath
+  - ID: org.springframework.kafka:spring-kafka+3.1.1
+    mimer:
+      linking: Classpath
+  - ID: org.xerial.snappy:snappy-java+1.1.10.5
+    mimer:
+      linking: Classpath

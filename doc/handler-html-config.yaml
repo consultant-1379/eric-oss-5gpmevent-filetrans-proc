@@ -1,0 +1,6 @@
+documents:
+  # document name
+  - name: Test_Report
+    # file names of files to be packaged in the document
+    files:
+      - ../doc/Test_Report/test_report.md

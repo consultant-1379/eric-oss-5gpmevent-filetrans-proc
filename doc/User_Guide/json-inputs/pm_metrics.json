@@ -1,0 +1,42 @@
+{
+    "metadata" : {
+      "serviceHelmChartName" : "same as the prefix to this file name",
+      "usedSchemaVersion" : "2.0 or later",
+      "fileVersion" : "The version of this pmMetrics json file",
+      "dateEdited" : "format yyyy-mm-dd"
+    },
+    "metrics" :
+    [
+      {
+        "pmMetric": "MetricNameCounter",
+        "metricDescription" : "Metric description and label description if applicable",
+        "metricType": "Counter",
+        "metricStatus": "stable",
+        "metricCategory" : "USE",
+        "metricLabel": ["label1", "label2"]
+      },
+      {
+        "pmMetric": "MetricNameGauge",
+        "metricDescription" : "Metric description",
+        "metricType": "Gauge",
+        "metricStatus": "stable",
+        "metricCategory": "RED"
+      },
+      {
+        "pmMetric":"MetricNameHistogram",
+        "metricDescription" : "Amount of erros",
+        "metricType": "Histogram",
+        "metricStatus": "alpha",
+        "metricCategory": "UsE",
+        "metricLabel": ["label4","label3"]
+      },
+      {
+        "pmMetric":"MetricNameSummary",
+        "metricDescription" : "Amount of erros",
+        "metricType": "Summary",
+        "metricStatus": "beta",
+        "metricCategory": "Red",
+        "metricLabel": ["label5"]
+      }
+    ]
+  }

@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "name": "subscriptionWithTwoPredicate",
+    "status": "Active",
+    "predicates": "{\"nodeName\":[\"*ManagedElement=*\",\"*ERBS*\"],\"eventId\":[\"200\",\"300\"]}",
+    "isMandatory": true,
+    "dataTypeIds": [
+      3
+    ],
+    "ids": {
+      "id": 1,
+      "subscriptionIds": [
+        1,
+        2
+      ],
+      "ids": "{\"version\":1.0,\"subscriptions\":[{\"name\":\"subscriptionWithTwopredicate\",\"isMandatory\":\"yes\",\"isOnHold\":\"no\",\"isTagged\":\"no\",\"consumer\":null,\"dataType\":{\"dataspace\":\"5G\",\"dataCategory\":\"PM_EVENTS\",\"dataProvider\":\"RAN\",\"schemaName\":\"PmEventOuterClass.PmEvent\",\"schemaVersion\":null},\"predicates\":{\"nodeName\":[\"*ManagedElement=*\",\"*ERBS*\"],\"eventId\":[\"200\",\"300\"]}}]}",
+      "rAppId": "191",
+      "status": "Active"
+    }
+  },
+  {
+    "id": 2,
+    "name": "subscriptionWithNoPredicate",
+    "status": "Inactive",
+    "predicates": "{}",
+    "isMandatory": false,
+    "dataTypeIds": [
+      3
+    ],
+    "ids": {
+      "id": 3,
+      "subscriptionIds": [
+        3,
+        4
+      ],
+      "ids": "{\"version\":1.0,\"subscriptions\":[{\"name\":\"subscriptionWithNoPredicate\",\"isMandatory\":\"yes\",\"isOnHold\":\"no\",\"isTagged\":\"no\",\"consumer\":null,\"dataType\":{\"dataspace\":\"5G\",\"dataCategory\":\"PM_EVENTS\",\"dataProvider\":\"RAN\",\"schemaName\":\"PmEventOuterClass.PmEvent\",\"schemaVersion\":null},\"predicates\":{}}]}",
+      "rAppId": "8",
+      "status": "Inactive"
+    }
+  },
+  {
+    "id": 3,
+    "name": "subscriptionWithNodeNamePredicate",
+    "status": "Processing",
+    "predicates": "{\"nodeName\":[\"NR100gNOdeBRadio00001995\"]}",
+    "isMandatory": true,
+    "dataTypeIds": [
+      3
+    ],
+    "ids": {
+      "id": 4,
+      "subscriptionIds": [
+        5,
+        6
+      ],
+      "ids": "{\"version\":1.0,\"subscriptions\":[{\"name\":\"subscriptionWithNodeNamePredicate\",\"isMandatory\":\"yes\",\"isOnHold\":\"no\",\"isTagged\":\"no\",\"consumer\":null,\"dataType\":{\"dataspace\":\"5G\",\"dataCategory\":\"PM_EVENTS\",\"dataProvider\":\"RAN\",\"schemaName\":\"PmEventOuterClass.PmEvent\",\"schemaVersion\":null},\"predicates\":{\"nodeName\":[\"NR100gNOdeBRadio00001995\"]}}]}",
+      "rAppId": "9",
+      "status": "Processing"
+    }
+  },
+  {
+    "id": 4,
+    "name": "subscriptionWithEventIdPredicate",
+    "status": "Error",
+    "predicates": "{\"eventId\":[\"200\",\"300\"]}",
+    "isMandatory": false,
+    "dataTypeIds": [
+      3
+    ],
+    "ids": {
+      "id": 5,
+      "subscriptionIds": [
+        7,
+        8
+      ],
+      "ids": "{\"version\":1.0,\"subscriptions\":[{\"name\":\"subscriptionWithEventIdPredicate\",\"isMandatory\":\"yes\",\"isOnHold\":\"no\",\"isTagged\":\"no\",\"consumer\":null,\"dataType\":{\"dataspace\":\"5G\",\"dataCategory\":\"PM_EVENTS\",\"dataProvider\":\"RAN\",\"schemaName\":\"PmEventOuterClass.PmEvent\",\"schemaVersion\":null},\"predicates\":{\"eventId\":[\"200\",\"300\"]}}]}",
+      "rAppId": "10",
+      "status": "Error"
+    }
+  }
+]

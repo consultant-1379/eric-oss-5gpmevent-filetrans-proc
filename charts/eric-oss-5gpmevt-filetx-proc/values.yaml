@@ -1,0 +1,339 @@
+#
+# COPYRIGHT Ericsson 2021
+#
+#
+#
+# The copyright to the computer program(s) herein is the property of
+#
+# Ericsson Inc. The programs may be used and/or copied only with written
+#
+# permission from Ericsson Inc. or in accordance with the terms and
+#
+# conditions stipulated in the agreement/contract under which the
+#
+# program(s) have been supplied.
+#
+
+# Default values for eric-oss-5gpmevt-filetx-proc.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+#global:
+#  timezone: UTC
+#  registry:
+#    url: armdocker.rnd.ericsson.se
+#    imagePullPolicy: IfNotPresent
+#  #Secret must be manually created in the namespace, no default value
+#  pullSecret: eric-adp-example-secret
+#  fsGroup:
+#    manual: 10000
+#    namespace: true
+#  # The IP family the service belongs to when service.type is set to ClusterIP.
+#  # Options are: IPv4, IPv6
+#  internalIPFamily:
+#  security:
+#    policyBinding:
+#      create: true
+#    policyReferenceMap:
+#      default-restricted-security-policy: "<restricted security policy at customer deployment>"
+#    tls:
+#      enabled: false
+#  serviceMesh:
+#    enabled: true
+#  # When the global ID for supplementalGroups is set, and both global and local values are provided,
+#  # the global values are combined with the local values. If no local settings are given, the global values will be used as-is.
+#  podSecurityContext:
+#    supplementalGroups: null #{value='0...max'}{default=null}
+
+networkPolicy:
+  enabled: true
+  podSelector:
+    # removing either "ingress" or "egress" will
+    # result in the respective rule set being "allow all"
+    - label: app.kubernetes.io/name
+      ingress:
+        - value: eric-pm-server
+          port: 33631
+          protocol: TCP
+        - port: 15090
+          protocol: TCP
+
+#TODO: Enable the tls security when solution is implemented
+security:
+  tls:
+    enabled: false
+
+replicaCount: 6
+httpTimeoutInSeconds: 60
+podDisruptionBudget:
+  # Minimum number/percentage of Pods that must remain available during the planned disruption.
+  # Value can be expressed as an integer or as a percentage. When specified as a percentage of the Pods,
+  # if it does not map to an exact number, Kubernetes rounds up to the nearest integer.
+  # minAvailable: 2 # example value for 2 pods defined as integer
+  minAvailable: "40%"
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 2
+    maxUnavailable: 0
+
+#Empty labels list for application deployment engineer to add more labels (In Compliance with DR-D1121-068).
+labels: {}
+
+imageCredentials:
+  repoPath:
+  eric-oss-5gpmevt-filetx-proc:
+    repoPath: # see default in eric-product-info.yaml
+    registry: {}
+      # overrides global registry url
+      # url:
+      #- Secret must be manually created in the namespace, no default value
+    # pullSecret: REPO_SECRET
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+annotations: {}
+
+# choice='unconfined, runtime/default, localhost' [ default= ""]
+# Configuration of AppArmor profile type. The following values are possible:
+# unconfined  - Indicates that there is no profile loaded.
+# runtime/default - Applies the default profile of the container engine.
+# localhost   - Applies a specific profile loaded on the host
+appArmorProfile:
+  type: ""
+  localhostProfile:
+
+seccompProfile:
+  type: "RuntimeDefault"
+  localhostProfile:
+
+# role binding (DR D1123-134)
+securityPolicy:
+  rolename: "eric-oss-5gpmevt-filetx-proc"
+
+#Max Egress set to 200M for passing DR-D1125-040-AD. Should be adjusted for fine tuning
+bandwidth:
+  maxEgressRate: 200M
+
+service:
+  type: ClusterIP
+  # note that the network policy might need to match this
+  port: 33631    # Changed from 80 to 33631 and spring application is hosted on 33631
+  endpoints:
+    chassisapi:
+      tls:
+        enforced: required
+        verifyClientCertificate: required
+
+ingress:
+  enabled: false
+  ingressClass: OAM-IngressClass
+  hosts:
+    - host: chart-example.local
+      paths: [/]
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+eric-pm-server:
+  rbac:
+    appMonitoring:
+      enabled: true
+
+prometheus:
+  path: /actuator/prometheus
+  scrape: true
+  interval: 15s
+
+terminationGracePeriodSeconds: 30
+
+podPriority:
+  eric-oss-5gpmevt-filetx-proc:
+    priorityClassName: ""
+
+# local streamingMethod. Options = dual, direct, indirect.
+log:
+  streamingMethod: dual
+  logLevel: INFO
+  logControlFile: /logcontrol/logcontrol.json
+  runtime-level-control:
+    enabled: true
+
+  # A set of local supplementalGroups values for use when fsGroup is not supported
+podSecurityContext:
+  supplementalGroups: null #{value='0...max'}{default=null}
+
+resources:
+  eric-oss-5gpmevt-filetx-proc:
+    requests:
+      memory: 2Gi
+      cpu: 1000m
+      ephemeral-storage: 5G
+    limits:
+      memory: 2.5Gi
+      cpu: 3000m
+      ephemeral-storage: 15G
+    jvm:
+      initialMemoryAllocationPercentage: 50
+      smallMemoryAllocationMaxPercentage: 70
+      largeMemoryAllocationMaxPercentage: 50
+  eric-oss-5gpmevt-filetx-proc-hooks:
+    requests:
+      memory: 250Mi
+      cpu: 100m
+      ephemeral-storage: 25Mi
+    limits:
+      memory: 400Mi
+      cpu: 500m
+      ephemeral-storage: 100Mi
+
+autoScaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+topologySpreadConstraints: []
+
+tolerations:
+  - key: node.kubernetes.io/not-ready
+    operator: Exists
+    effect: NoExecute
+    tolerationSeconds: 0
+  - key: node.kubernetes.io/unreachable
+    operator: Exists
+    effect: NoExecute
+    tolerationSeconds: 0
+
+
+affinity:
+  podAntiAffinity: "soft"
+  topologyKey: "kubernetes.io/hostname"
+
+connected:
+  systems:
+    baseUrl: "http://eric-eo-subsystem-management"
+    uri: "/subsystem-manager/v1/subsystems"
+    port: ":80"
+
+dmm:
+  dataCatalog:
+    baseUrl: "http://eric-oss-data-catalog"
+    basePort: ":9590"
+    dataServiceUri: "/catalog/v1/data-service"
+    notificationTopicUri: "/catalog/v1/notification-topic"
+    dataCategory: "PM_EVENTS"
+    messageBusUri: "/catalog/v1/message-bus"
+    dataProviderTypeUri: "/catalog/v1/data-provider-type"
+    dataSpaceUri: "/catalog/v1/data-space"
+    dataCollectorUri: "/catalog/v1/data-collector"
+    messageSchemaUriV1: "/catalog/v1/message-schema"
+    messageSchemaUriV2: "/catalog/v2/message-schema"
+    messageDataTopicUri: "/catalog/v1/message-data-topic"
+    messageStatusTopicUri: "/catalog/v1/message-status-topic"
+    messageBusName: "mb2"
+    messageBusNamespace: "nameSpace"
+    dataProviderTypeId: "V2"
+    dataProviderTypeVersion: "v5"
+    dataSpace: "5G"
+    dataCollectorName: "enm1"
+  schemaRegistry:
+    url: "http://eric-schema-registry-sr:8081"
+
+eventFileDownload:
+  numberOfSftpConnectRetries: 3
+  numberOfEventFileDownloadRetries: 3
+  sftpSessionTimeoutMs: 15000
+  sftpConnectBackoffMs: 1000
+
+spring:
+  kafka:
+    clusterName: eric-oss-dmm-kf-op-sz
+    bootstrapServer: eric-oss-dmm-kf-op-sz-kafka-bootstrap:9092
+    bootstrapServersTls: eric-oss-dmm-kf-op-sz-kafka-bootstrap:9093
+    admin:
+      retry: "2147483647" # must be quoted due to helm bug
+      retryBackoffMs: 100
+      reconnectBackoffMs: 50
+      reconnectBackoffMaxMs: 30000 # custom value, default Kafka 1000
+      requestTimeoutMs: 30000
+    producer:
+      retryBackoffMs: 100
+      reconnectBackoffMs: 50
+      reconnectBackoffMaxMs: 30000 # custom value, default Kafka 1000
+      requestTimeoutMs: 30000
+    consumer:
+      autoOffsetReset: "earliest"
+      retryBackoffMs: 100
+      reconnectBackoffMs: 50
+      reconnectBackoffMaxMs: 30000 # custom value, default Kafka 1000
+      requestTimeoutMs: 30000
+    subscriptionConsumer:
+      autoOffsetReset: "latest"
+      retryBackoffMs: 100
+      reconnectBackoffMs: 50
+      reconnectBackoffMaxMs: 30000 # custom value, default Kafka 1000
+      requestTimeoutMs: 30000
+    topics:
+      input:
+        name: "file-notification-service--5g-event--enm1"
+        prefix: "file-notification-service--5g-event--"
+        partitionAssignmentStrategy: org.apache.kafka.clients.consumer.CooperativeStickyAssignor
+        sessionTimeoutMs: 60000
+        concurrency: 2
+        maxPollRecords: 20
+        maxPollIntervalMs: 600000
+      subscriptionInput:
+        name: "dcc--notification-topic"
+        partitionAssignmentStrategy: org.apache.kafka.clients.consumer.CooperativeStickyAssignor
+        sessionTimeoutMs: 30000
+        maxPollIntervalMs: 60000
+      dataJobTopic:
+        name: "service-control--eric-oss-5gpmevent-filetrans-proc"
+      output:
+        prefix: "5g-pm-event-file-transfer-and-processing--"
+        acks: all
+        compressionType: "lz4"
+        partitions: 20
+        replicas: 2
+        batchSize: "500000" #500KB
+        bufferMemory: "32000000" #32MB
+        maxRequestSize: "50000000" #50MB
+        linger: 100 #100ms
+        retentionPeriodMS: "1200000" # 20 mins | If this is changed it will only take effect if the topic did not already exist
+        retentionBytesTopic: "85899345920" # 80GB storage total per topic before retention takes effect
+eventRegulation:
+  produceNonStandard: true
+
+probes:
+  eric-oss-5gpmevt-filetx-proc:
+    livenessProbe:
+      failureThreshold: 5
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      timeoutSeconds: 10
+    readinessProbe:
+      failureThreshold: 5
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      timeoutSeconds: 10
+
+configMap:
+  defaultMode: 493 # default permissions for the configmap in decimal format (493 translates to 0755 in octal)
